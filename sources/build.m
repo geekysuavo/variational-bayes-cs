@@ -22,8 +22,10 @@ addpath('../../sources');
 % load the instance data.
 load('instance.dat.gz');
 
-% execute reconstruction.
+% execute a timed reconstruction.
+tic;
 [x, elbo, eta] = mfunc(y, A, At, mu0, lambda0, alpha0, beta0, iters);
+runtime = toc;
 
 % write the results.
 save('-binary', '-z', ['model-', mtype, '.dat.gz']);
