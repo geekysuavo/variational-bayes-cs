@@ -3,27 +3,6 @@
 load('fid.dat.gz');
 x0 = x0 ./ max(real(x0));
 
-% =========================================================
-
-% define the forward operator.
-function y = forward (x, schd, n)
-  % inverse fourier transform and subsample.
-  f = ifft(x) .* sqrt(n);
-  y = f(schd,:);
-end
-
-% define the adjoint operator.
-function x = adjoint (y, schd, n)
-  % create an infilled vector of y-values.
-  f = zeros(n, columns(y));
-  f(schd,:) = y;
-
-  % compute the fourier transform.
-  x = fft(f) ./ sqrt(n);
-end
-
-% =========================================================
-
 % set the problem sizes.
 m = length(sched);
 n = 2 * length(x0);
