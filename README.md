@@ -5,7 +5,7 @@ An extension of the variational relevance vector machine (VRVM) for
 highly scalable sparse Bayesian learning in compressed sensing
 recovery problems.
 
-Technical details of the algorithm are given in:
+Technical details of the algorithm are _in preparation for submission to_:
 
 > Worley, B., Malliavin, T. E., Nilges, M., _Scalable Sparse Bayesian
 > Learning for Compressed Sensing Recovery_, IEEE Transactions on
