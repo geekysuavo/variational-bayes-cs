@@ -29,5 +29,10 @@ octave model.m vrvm
 ```
 
 The VRVM model script can take a very long time to complete, and typically
-requires an order of magnitude more memory to work.
+requires an order of magnitude more memory to work. Results can be cleaned
+up by calling:
+
+```bash
+octave clean.m
+```
 
