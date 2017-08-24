@@ -3,13 +3,63 @@
 %
 function [x, elbo, eta] = ...
 nesta (b, A, At, mu0, lambda0, alpha0, beta0, iters)
-  % adjust the iteration scheme to fit nesta.
-  if (isscalar(iters))
-    iters = [round(iters / 50), 50];
+  % check for the minimum number of arguments.
+  if (nargin < 2)
+    error('at least two arguments required');
   end
 
-  % create a function handle for projection.
-  AtA = @(x) At(A(x));
+  % check the required measurement vector.
+  if (isempty(b) || !isvector(b) || !iscolumn(b))
+    error('measurement must be a vector');
+  end
+
+  % check the required measurement operator.
+  if (!isempty(A) && (nargin < 3 || isempty(At)))
+    % matrix specification. check the data type.
+    if (!ismatrix(A))
+      error('invalid measurement: expected matrix');
+    end
+
+    % store copies of the measurement matrix and its gramian.
+    B = A;
+    G = A' * A;
+
+    % create function handles for forward, inverse, and projection.
+    A = @(x) B * x;
+    At = @(y) B' * y;
+    AtA = @(x) G * x;
+
+  elseif (!isempty(A) && nargin >= 3 && !isempty(At))
+    % function handle specification. check the data types.
+    if (!is_function_handle(A) || !is_function_handle(At))
+      error('invalid measurement: expected function handles');
+    end
+
+    % create a function handle for projection.
+    AtA = @(x) = At(A(x));
+  end
+
+  % check for a prior mu parameter.
+  if (nargin < 4 || isempty(mu0))
+    % none specified. use a default value.
+    mu0 = 1e-3;
+  end
+
+  % check for a prior lambda parameter.
+  if (nargin < 5 || isempty(lambda0))
+    % none specified. use a default value.
+    lambda0 = 1e-3;
+  end
+
+  % check for an iteration count argument.
+  if (nargin < 8 || isempty(iters))
+    % none specified. use a default value.
+    iters = [10, 50];
+
+  elseif (isscalar(iters))
+    % adjust the iteration scheme to accomodate nesta.
+    iters = [round(iters / 50), 50];
+  end
 
   % define the gradient of the l1 term.
   df = @(x, mu) (x ./ mu) .* (abs(x) < mu) + sign(x) .* (abs(x) >= mu);
