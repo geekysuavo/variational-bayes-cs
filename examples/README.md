@@ -7,6 +7,7 @@ problems is:
 
  * [gauss](gauss): Unit impulse positive spikes, Gauss matrix measurements.
  * [nmr1d](nmr1d): 1D NMR trace, incomplete Fourier operator measurements.
+ * [nmr2d](nmr2d): 2D NMR plane, incomplete Fourier operator measurements.
  * [spikes-sm](spikes-sm): Small spikes instance, normal matrix measurements.
  * [spikes-lg](spikes-lg): Large spikes instance, normal matrix measurements.
 
