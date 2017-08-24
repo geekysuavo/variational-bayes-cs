@@ -36,7 +36,7 @@ nesta (b, A, At, mu0, lambda0, alpha0, beta0, iters)
     end
 
     % create a function handle for projection.
-    AtA = @(x) = At(A(x));
+    AtA = @(x) At(A(x));
   end
 
   % check for a prior mu parameter.
