@@ -11,7 +11,7 @@ N = prod(n);
 
 % build an index set for compacting to m-vectors.
 S0 = sched(:,1) + (sched(:,2) - 1) * n(1);
-S = S0 + N * [0:3];
+S = bsxfun(@plus, S0, N * [0:3]);
 
 % set the prior parameters.
 mu0 = m;

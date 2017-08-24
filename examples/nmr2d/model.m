@@ -8,17 +8,13 @@ mtype = 'vbcs';
 % check if arguments were specified.
 if (length(args) && ...
     (strcmp(args{end}, 'vbcs') || ...
-     strcmp(args{end}, 'vrvm') || ...
      strcmp(args{end}, 'nesta')))
   % set the new model type.
   mtype = args{end};
 end
 
 % get the model function handle.
-mfunc = str2func(mtype);
-
-% read in the source files.
-addpath('../../sources');
+mfunc = str2func([mtype, '_mx2']);
 
 % load the instance data.
 load('instance.dat.gz');
