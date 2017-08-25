@@ -12,8 +12,8 @@ nesta = load([D, 'model-nesta.dat.gz']);
 
 % set the contours.
 clev0 = logspace(log10(0.01), log10(0.5), 20);
-vbcs.clev = logspace(log10(0.01), log10(4), 20);
-nesta.clev = logspace(log10(0.01), log10(1), 20);
+vbcs.clev = logspace(log10(0.02), log10(4), 20);
+nesta.clev = logspace(log10(0.01), log10(2), 20);
 
 % compute the ground truth spectrum.
 x0 = fftshift(mxifft2(y0, n)(:,:,1));
