@@ -19,13 +19,13 @@ unset xtics
 unset ytics
 
 set label 1 '$\m{\Phi}^* \m{y}^0$' at graph lx, ly
-p 'nmr2d.dat' u 1:2 w l lc rgb 'black'
+p 'nmr2d-orig.dat' u 1:2:3 w l lc pal
 
 set label 1 '$\xhat_{\textsc{nesta}}$' at graph lx, ly
-p 'nmr2d.dat' u 1:3 w l lc rgb 'black'
+p 'nmr2d-nesta.dat' u 1:2:3 w l lc pal
 
 set label 1 '$\xhat_{\textsc{vbcs}}$' at graph lx, ly
-p 'nmr2d.dat' u 1:4 w l lc rgb 'black'
+p 'nmr2d-vbcs.dat' u 1:2:3 w l lc pal
 
 unset multiplot
 

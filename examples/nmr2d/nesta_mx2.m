@@ -67,7 +67,7 @@ nesta_mx2 (b, A, At, mu0, lambda0, alpha0, beta0, iters)
   mu0 = max(vec(sqrt(sumsq(h, 3))));
 
   % compute the constant for the quadratic constraint.
-  vareps = 0.1 * sqrt(m / (mu0 / lambda0));
+  vareps = 0.01 * sqrt(m / (mu0 / lambda0));
 
   % iterate, outer loop.
   for it = 1 : iters(1)
