@@ -47,8 +47,8 @@ nesta_mx2 (b, A, At, mu0, lambda0, alpha0, beta0, iters)
 
   % define the gradient of the l1 term.
   df = @(x, mu) ...
-    (x ./ mu) .* (sqrt(sumsq(x, 3)) < mu) ...
-    + sign(x) .* (sqrt(sumsq(x, 3)) >= mu);
+      bsxfun(@times, x ./ mu, sqrt(sumsq(x, 3)) < mu) ...
+    + bsxfun(@times, sign(x), sqrt(sumsq(x, 3)) >= mu);
 
   % initialize the transformed data vector.
   h = At(b);
