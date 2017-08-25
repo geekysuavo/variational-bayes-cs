@@ -10,7 +10,7 @@ vbcs = load([D, 'model-vbcs.dat.gz']);
 vrvm = load([D, 'model-vrvm.dat.gz']);
 
 % collect the necessary data.
-dat = [x0, vrvm.x, vbcs.x];
+dat = [[1 : n]', x0, vrvm.x, vbcs.x];
 
 % write the data to a text file.
 save('-ascii', 'spikes.dat', 'dat');
