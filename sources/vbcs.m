@@ -156,7 +156,7 @@ vbcs (y, A, At, mu0, lambda0, alpha0, beta0, iters)
     T4 =  x'  * (tau .* up + xi .* xp);
 
     % compute the bounded step size for the mean update.
-    gamma = abs(T1 + T2 + T4) / abs(T2 + T3 + 2*T4);
+    gamma = real(T1 + T2 + T4) / real(T2 + T3 + 2*T4);
     gamma = min(max(gamma, 1e-3), 1);
 
     % update the means and their projection.
@@ -170,11 +170,11 @@ vbcs (y, A, At, mu0, lambda0, alpha0, beta0, iters)
     % update the noise.
     lambda = lambda0 + 0.5 * y' * y - h' * x ...
            + 0.5 * (x' * u + g' * v);
-    lambda = abs(lambda);
+    lambda = real(lambda);
     tau = mu / lambda;
 
     % compute the new value of the lower bound.
-    L = -(tau/2) * abs(y' * y - 2 * h' * x + x' * u + g' * v) ...
+    L = -(tau/2) * real(y' * y - 2 * h' * x + x' * u + g' * v) ...
       - sum(((alpha/2) * (conj(x) .* x + v) + alpha * beta0) ./ beta) ...
       - mu * log(lambda) - mu * lambda0 / lambda - alpha * sum(log(beta)) ...
       + 0.5 * sum(log(v));

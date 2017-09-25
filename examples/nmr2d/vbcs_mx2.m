@@ -107,7 +107,7 @@ vbcs_mx2 (y, A, At, mu0, lambda0, alpha0, beta0, iters)
     T4 =  mxdot2(x,  tau .* up + bsxfun(@times, xi, xp));
 
     % compute the bounded step size for the mean update.
-    gamma = norm(T1 + T2 + T4) / norm(T2 + T3 + 2*T4);
+    gamma = (T1 + T2 + T4)(1) / (T2 + T3 + 2*T4)(1);
     gamma = min(max(gamma, 1e-3), 1);
 
     % update the means and their projection.
@@ -115,8 +115,8 @@ vbcs_mx2 (y, A, At, mu0, lambda0, alpha0, beta0, iters)
     u = (1 - gamma) .* u + gamma .* up;
 
     % compute some intermediate values.
-    trGxx = norm(mxdot2(x, u)) + sum(vec(g .* v));
-    hx = norm(mxdot2(h, x));
+    trGxx = mxdot2(x, u)(1) + sum(vec(g .* v));
+    hx = mxdot2(h, x)(1);
     x2 = sumsq(x, 3) + v;
 
     % update the precisions.
@@ -125,7 +125,7 @@ vbcs_mx2 (y, A, At, mu0, lambda0, alpha0, beta0, iters)
 
     % update the noise.
     lambda = lambda0 + 0.5 .* yy - hx + 0.5 .* trGxx;
-    lambda = abs(lambda);
+    lambda = real(lambda);
     tau = mu / lambda;
 
     % compute the new value of the lower bound.
