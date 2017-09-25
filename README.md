@@ -36,6 +36,11 @@ implementations of both VBCS and the VRVM are provided.
 Numerical problems demonstrating the features of **vbcs** are stored in
 subdirectories of [examples](examples).
 
+### Figures
+
+Scripts for generating the figures in the **vbcs** publication are stored
+in subdirectories of [figures](figures).
+
 ## Licensing
 
 The **vbcs** sources and example files released under the
