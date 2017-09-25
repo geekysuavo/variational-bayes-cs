@@ -3,7 +3,7 @@
 
 This directory contains a set of scripts for summarizing some of the
 numerical example problems in the [examples](../examples) directory.
-The correspondance is:
+The correspondence is:
 
  * [gauss](gauss) => [examples/gauss](../examples/gauss)
  * [nmr1d](nmr1d) => [examples/nmr1d](../examples/nmr1d)
