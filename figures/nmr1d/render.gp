@@ -20,7 +20,7 @@ set yrange [-0.02 : 0.7]
 set ylabel '$\m{\Phi}^* \m{y}^0$'
 p 'nmr1d.dat' u 1:2 w l lc rgb 'black'
 
-set yrange [-0.05 : 2.8]
+set yrange [-0.05 : 1.4]
 set ylabel '$\xhat_{\textsc{nesta}}$'
 p 'nmr1d.dat' u 1:3 w l lc rgb 'black'
 
