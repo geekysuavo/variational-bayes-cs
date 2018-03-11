@@ -101,12 +101,11 @@ ifsbl (y, A, At, nu0, lambda0, alpha0, beta0, iters)
     eigopt = 'lr';
   end
   T = 2 * real(eigs(AtA(eye(n)), 1, eigopt));
-  AtAdiag = real(diag(AtA(eye(n))));
 
-  % define the expectation of the bounded norm, E[g(x,z)]
+  % define the expectation of the bound on the norm, E[g(x,z)]
   g = @(z, mu, sigma) ...
-    norm(y - A(z))^2 + 2 .* (mu - z)' * At(A(z) - y) + ...
-    (T/2) .* (norm(mu - z).^2 + sum(sigma));
+    norm(y - A(z))^2 + 2 * (mu - z)' * At(A(z) - y) + ...
+    (T/2) * (norm(mu - z)^2 + sum(sigma));
 
   % compute the constant updated parameters.
   alpha = alpha0 + (1/2);
@@ -124,7 +123,7 @@ ifsbl (y, A, At, nu0, lambda0, alpha0, beta0, iters)
     sigma = 1 ./ (tau * (T/2) + xi);
 
     % update the means.
-    mu = tau .* sigma .* (AtA(z) - h - (T/2) .* z);
+    mu = tau .* sigma .* (h + (T/2) .* z - AtA(z));
 
     % compute the log-determinant.
     lndetS = sum(log(sigma));
