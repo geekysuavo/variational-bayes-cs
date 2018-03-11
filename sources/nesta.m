@@ -1,8 +1,15 @@
 
-% nesterov's algorithm for quadratically constrained l1-minimization.
+% -*- texinfo -*-
+% @deftypefn  {} {[@var{mu}, @dots{}] =} nesta (@var{y}, @var{A}, @dots{})
+% Recover a sparse signal @var{x} from incomplete data @var{y} and a
+% measurement matrix (@var{A} or @var{A},@var{At}) using Nesterov's
+% algorithm for quadratically constrained l1-norm minimization.
 %
-function [x, elbo, eta] = ...
-nesta (b, A, At, mu0, lambda0, alpha0, beta0, iters)
+% See @ref{vrvm} for detailed usage information.
+% @end deftypefn
+%
+function [x, obj, parms] = ...
+nesta (b, A, At, nu0, lambda0, alpha0, beta0, iters)
   % check for the minimum number of arguments.
   if (nargin < 2)
     error('at least two arguments required');
@@ -39,10 +46,10 @@ nesta (b, A, At, mu0, lambda0, alpha0, beta0, iters)
     AtA = @(x) At(A(x));
   end
 
-  % check for a prior mu parameter.
-  if (nargin < 4 || isempty(mu0))
+  % check for a prior nu parameter.
+  if (nargin < 4 || isempty(nu0))
     % none specified. use a default value.
-    mu0 = 1e-3;
+    nu0 = 1e-3;
   end
 
   % check for a prior lambda parameter.
@@ -62,7 +69,7 @@ nesta (b, A, At, mu0, lambda0, alpha0, beta0, iters)
   end
 
   % define the gradient of the l1 term.
-  df = @(x, mu) (x ./ mu) .* (abs(x) < mu) + sign(x) .* (abs(x) >= mu);
+  df = @(x, nu) (x ./ nu) .* (abs(x) < nu) + sign(x) .* (abs(x) >= nu);
 
   % initialize the transformed data vector.
   h = At(b);
@@ -77,17 +84,20 @@ nesta (b, A, At, mu0, lambda0, alpha0, beta0, iters)
   z = zeros(n, 1);
 
   % set up the vector of thresholds, and compute the max threshold.
-  muv = linspace(0.9, 0.01, iters(1));
-  mu0 = max(abs(h));
+  nuv = linspace(0.9, 0.01, iters(1));
+  nu0 = max(abs(h));
 
   % compute the constant for the quadratic constraint.
-  vareps = 0.1 * sqrt(m / (mu0 / lambda0));
+  vareps = 0.1 * sqrt(m / (nu0 / lambda0));
+
+  % initialize the objective vector.
+  obj = repmat(0, prod(iters), 1);
 
   % iterate, outer loop.
   for it = 1 : iters(1)
     % set the current threshold value and lipschitz constant.
-    mu = mu0 * muv(it);
-    L = 1 / mu;
+    nu = nu0 * nuv(it);
+    L = 1 / nu;
 
     % initialize the gradient accumulator.
     xc = x;
@@ -96,7 +106,7 @@ nesta (b, A, At, mu0, lambda0, alpha0, beta0, iters)
     % iterate, inner loop.
     for jt = 1 : iters(2)
       % compute the gradient.
-      dfdx = df(x, mu);
+      dfdx = df(x, nu);
 
       % compute the scale factors for the accumulator and iterates.
       alpha = (jt + 1) / 2;
@@ -117,11 +127,13 @@ nesta (b, A, At, mu0, lambda0, alpha0, beta0, iters)
 
       % update the x-iterate.
       x = tau .* z + (1 - tau) .* y;
+
+      % store the objective.
+      obj((it-1) * iters(2) + jt) = sum(abs(x));
     end
   end
 
-  % return empty values for the other outputs.
-  elbo = [];
-  eta = [];
+  % return an empty set of variational parameters.
+  parms = [];
 end
 

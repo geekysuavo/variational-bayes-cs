@@ -8,7 +8,7 @@ m = length(sched);
 n = 2 * length(x0);
 
 % set the prior parameters.
-mu0 = 50;
+nu0 = 50;
 lambda0 = 0.005;
 alpha0 = 1e-3;
 beta0 = 1e-3;

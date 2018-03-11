@@ -9,6 +9,7 @@ mtype = 'vbcs';
 if (length(args) && ...
     (strcmp(args{end}, 'vbcs') || ...
      strcmp(args{end}, 'vrvm') || ...
+     strcmp(args{end}, 'vrvm_lowrank') || ...
      strcmp(args{end}, 'nesta')))
   % set the new model type.
   mtype = args{end};
@@ -25,7 +26,7 @@ load('instance.dat.gz');
 
 % execute a timed reconstruction.
 tic;
-[x, elbo, eta] = mfunc(y, A, At, mu0, lambda0, alpha0, beta0, iters);
+[mu, obj, parms] = mfunc(y, A, At, nu0, lambda0, alpha0, beta0, iters);
 runtime = toc;
 
 % write the results.

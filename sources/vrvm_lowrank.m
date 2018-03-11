@@ -1,15 +1,17 @@
 
 % -*- texinfo -*-
-% @deftypefn  {} {[@var{mu}, @dots{}] =} vbcs (@var{y}, @var{A}, @dots{})
+% @deftypefn  {} {[@var{mu}, @dots{}] =} vrvm_lowrank (@var{y}, @var{A}, @
+% @dots{})
 % Recover a sparse signal @var{x} from incomplete data @var{y} and a
-% measurement matrix (@var{A} or @var{A},@var{At}) using Variational
-% Bayesian Compressed Sensing.
+% measurement matrix (@var{A} or @var{A},@var{At}) using an implementation
+% of the Variational Relevance Vector Machine that leverages the low-rank
+% properties of the measurement operator to reduce computational demands.
 %
 % See @ref{vrvm} for detailed usage information.
 % @end deftypefn
 %
-function [x, obj, parms] = ...
-vbcs (y, A, At, nu0, lambda0, alpha0, beta0, iters)
+function [mu, obj, parms] = ...
+vrvm_lowrank (y, A, At, nu0, lambda0, alpha0, beta0, iters)
   % check for the minimum number of arguments.
   if (nargin < 2)
     error('at least two arguments required');
@@ -84,19 +86,13 @@ vbcs (y, A, At, nu0, lambda0, alpha0, beta0, iters)
   n = length(h);
 
   % initialize the weight means.
-  x = zeros(n, 1);
+  mu = zeros(n, 1);
 
   % initialize the precisions.
   xi = repmat(alpha0 / beta0, n, 1);
 
   % initialize the noise.
   tau = nu0 / lambda0;
-
-  % initialize the projected weight means.
-  u = AtA(x);
-
-  % compute the projector diagonal, in the most general way possible.
-  g = real(diag(AtA(eye(n))));
 
   % compute the constant updated parameters.
   alpha = alpha0 + (1/2);
@@ -105,45 +101,41 @@ vbcs (y, A, At, nu0, lambda0, alpha0, beta0, iters)
   % compute the constant portion of the objective.
   phi0 = vrvm_const(m, n, nu0, lambda0, alpha0, beta0);
 
-  % initialize the objective vector.
+  % initialize the lower bound vector.
   obj = repmat(phi0, iters, 1);
 
   % iterate.
   for it = 1 : iters
-    % update the variances.
-    v = 1 ./ (tau .* g + xi);
+    % build the kernel matrix, K = A E[Xi]^-1 A*
+    K = A(A(diag(1 ./ xi))');
 
-    % compute the parallel means and their projection.
-    xp = tau .* v .* (h - u + g .* x);
-    up = AtA(xp);
+    % factorize the shifted kernel matrix.
+    U = chol(eye(m) ./ tau + K);
+    Q = chol2inv(U);
 
-    % compute the terms of the step size.
-    T1 = tau .* h' * (x - xp);
-    T2 = -x'  * (tau .* u  + xi .* x);
-    T3 = -xp' * (tau .* up + xi .* xp);
-    T4 =  x'  * (tau .* up + xi .* xp);
-
-    % compute the bounded step size for the mean update.
-    gamma = real(T1 + T2 + T4) / real(T2 + T3 + 2*T4);
-    gamma = min(max(gamma, 1e-3), 1);
-
-    % update the means and their projection.
-    x = (1 - gamma) .* x + gamma .* xp;
-    u = (1 - gamma) .* u + gamma .* up;
+    % update the means.
+    t = Q * K * y;
+    mu = tau .* At(y - t) ./ xi;
 
     % compute the log-determinant.
-    lndetS = sum(log(v));
+    lndetS = m * log(tau) + sum(log(xi)) + 2 * sum(log(real(diag(U))));
 
     % compute the trace term.
-    trGS = g' * v;
+    trKQK = real(trace(K * Q * K));
+    trK = real(trace(K));
+    trGS = trK - trKQK;
+
+    % compute the marginal variances.
+    S = sum(real(At(eye(m)) .* conj(At(Q))), 2);
+    sigma = 1./xi - S ./ xi.^2;
 
     % update the precisions.
-    mu2 = conj(x) .* x + v;
+    mu2 = conj(mu) .* mu + sigma;
     beta = beta0 + 0.5 .* mu2;
     xi = alpha ./ beta;
 
     % update the noise.
-    lambda = lambda0 + 0.5 * norm(y - A(x))^2 + 0.5 * trGS;
+    lambda = lambda0 + 0.5 * norm(y - A(mu))^2 + 0.5 * trGS;
     tau = nu / lambda;
 
     % compute the objective function value.
@@ -156,8 +148,8 @@ vbcs (y, A, At, nu0, lambda0, alpha0, beta0, iters)
   % check if the complete set of variational parameters was requested.
   if (nargout >= 3)
     % store the parameters over x.
-    parms.mu = x;
-    parms.sigma = v;
+    parms.mu = mu;
+    parms.sigma = sigma;
 
     % store the parameters over tau.
     parms.nu = nu;

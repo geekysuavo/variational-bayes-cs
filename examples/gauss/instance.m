@@ -5,7 +5,7 @@ n = 1000;
 k = 5;
 
 % set the prior parameters.
-mu0 = 200;
+nu0 = 200;
 lambda0 = 0.02;
 alpha0 = 1e-9;
 beta0 = 1e-9;

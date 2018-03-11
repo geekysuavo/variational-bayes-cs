@@ -14,7 +14,7 @@ S0 = sched(:,1) + (sched(:,2) - 1) * n(1);
 S = bsxfun(@plus, S0, N * [0:3]);
 
 % set the prior parameters.
-mu0 = m;
+nu0 = m;
 sigma0 = 0.001;
 lambda0 = m * sigma0^2;
 alpha0 = 1e-3;
