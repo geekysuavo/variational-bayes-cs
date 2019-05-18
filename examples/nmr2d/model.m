@@ -21,7 +21,7 @@ load('instance.dat.gz');
 
 % execute a timed reconstruction.
 tic;
-[x, elbo, eta] = mfunc(y, A, At, mu0, lambda0, alpha0, beta0, iters);
+[x, elbo, eta] = mfunc(y, A, At, nu0, lambda0, alpha0, beta0, iters);
 runtime = toc;
 
 % write the results.
