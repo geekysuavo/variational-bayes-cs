@@ -5,11 +5,8 @@ An extension of the variational relevance vector machine (VRVM) for
 highly scalable sparse Bayesian learning in compressed sensing
 recovery problems.
 
-Technical details of the algorithm are _in preparation for submission to_:
-
-> Worley, B., Malliavin, T. E., Nilges, M., _Scalable Sparse Bayesian
-> Learning for Compressed Sensing Recovery_, IEEE Transactions on
-> Signal Processing, 2017.
+**Note:** This repository is woefully out of date. For peer-reviewed
+code, please see [sbl-sandbox](https://github.com/geekysuavo/sbl-sandbox).
 
 ## Introduction
 
@@ -46,6 +43,3 @@ in subdirectories of [figures](figures).
 The **vbcs** sources and example files released under the
 [MIT license](https://opensource.org/licenses/MIT). See the
 [LICENSE.md](LICENSE.md) file for the complete license terms.
-
-*~ Brad.*
-
